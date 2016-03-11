@@ -43,6 +43,7 @@ public class Main {
 	private static void Parse(String fileName){
 		Pattern nodePattern = Pattern.compile("Call graph node for function: '(.*?)'<<.*>>  #uses=(\\d*).*$");
 		Pattern functionPattern = Pattern.compile("CS<(.*)> calls function '(.*?)'.*$");
+<<<<<<< HEAD
 		String callerName;
 		String calleeName;
 		try {
@@ -64,6 +65,19 @@ public class Main {
 				if(functionMatcher.find()){
 					calleeName = functionMatcher.group(2);
 					System.out.println(calleeName);
+=======
+		try {
+			BufferedReader br = new BufferedReader(new FileReader(fileName));
+			String currentLine = null;
+			while((currentLine = br.readLine()) != null){
+				Matcher nodeMacher = nodePattern.matcher(currentLine);
+				if(nodeMacher.find()){
+					System.out.println(currentLine);
+				}
+				Matcher functionMatcher = functionPattern.matcher(currentLine);
+				if(functionMatcher.find()){
+					System.out.println(currentLine);
+>>>>>>> c54ad7da701949e70ca41c9167c8af97368644b1
 				}
 			}//end of while
 			br.close();
