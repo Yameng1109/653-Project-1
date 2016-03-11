@@ -1,13 +1,14 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Main {
 	public static int T_SUPPORT = 3;
 	public static int T_CONFIDENCE = 65;
-	
+	HashSet<Function> functions = new HashSet<Function>();
 	public static void main(String[] args){
 		int support = T_SUPPORT;
 		double confidence = T_CONFIDENCE/100;
@@ -46,11 +47,12 @@ public class Main {
 
 		String callerName;
 		String calleeName;
+		
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(fileName));
 			String currentLine = null;
 			currentLine = br.readLine();
-			//skip the none function node
+			//skip the <<null function>> node
 			while(!currentLine.isEmpty()){
 				currentLine = br.readLine();
 			}
@@ -59,12 +61,14 @@ public class Main {
 				Matcher nodeMacher = nodePattern.matcher(currentLine);
 				if(nodeMacher.find()){
 					callerName = nodeMacher.group(1);
-					System.out.println(callerName);
+					Function caller = new Function(callerName.hashCode(),callerName);
+					System.out.println(caller);
 				}
 				Matcher functionMatcher = functionPattern.matcher(currentLine);
 				if(functionMatcher.find()){
 					calleeName = functionMatcher.group(2);
-					System.out.println(calleeName);
+					Function callee = new Function(calleeName.hashCode(),calleeName);
+					System.out.println(callee);
 
 				}
 			}//end of while
