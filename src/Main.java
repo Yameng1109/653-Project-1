@@ -2,6 +2,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -9,7 +10,7 @@ public class Main {
 	public static int T_SUPPORT = 3;
 	public static int T_CONFIDENCE = 65;
 	HashSet<Function> functions = new HashSet<Function>();
-	public static void main(String[] args){
+	public void main(String[] args){
 		int support = T_SUPPORT;
 		double confidence = T_CONFIDENCE/100;
 		String fileName = "";
@@ -37,11 +38,11 @@ public class Main {
 			System.exit(-1);
 		}
 		//CallGraph callGraph = new CallGraph();
-		Parse(fileName);
+		this.Parse(fileName);
 		
 	}//end of main method
 	
-	private static void Parse(String fileName){
+	public void Parse(String fileName){
 		Pattern nodePattern = Pattern.compile("Call graph node for function: '(.*?)'<<.*>>  #uses=(\\d*).*$");
 		Pattern functionPattern = Pattern.compile("CS<(.*)> calls function '(.*?)'.*$");
 
@@ -62,13 +63,15 @@ public class Main {
 				if(nodeMacher.find()){
 					callerName = nodeMacher.group(1);
 					Function caller = new Function(callerName.hashCode(),callerName);
-					System.out.println(caller);
+					functions.add(caller);
+					//System.out.println(caller.getId()+caller.getName());
 				}
 				Matcher functionMatcher = functionPattern.matcher(currentLine);
 				if(functionMatcher.find()){
 					calleeName = functionMatcher.group(2);
 					Function callee = new Function(calleeName.hashCode(),calleeName);
-					System.out.println(callee);
+					functions.add(callee);
+					//System.out.println(callee.getId()+callee.getName());
 
 				}
 			}//end of while
@@ -76,7 +79,12 @@ public class Main {
 		}catch(IOException e){
 			e.printStackTrace();
 			System.exit(-1);
-		}		
+		}
+		
+		for(Function function : functions){
+			System.out.println(function.getName());
+		}
+		
 	}//end of parse
 	
 	
