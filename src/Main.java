@@ -1,7 +1,9 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -9,8 +11,8 @@ import java.util.regex.Pattern;
 public class Main {
 	public static int T_SUPPORT = 3;
 	public static int T_CONFIDENCE = 65;
-	HashSet<Function> functions = new HashSet<Function>();
-	public void main(String[] args){
+	static HashSet<Function> functions = new HashSet<Function>();
+	public static void main(String[] args){
 		int support = T_SUPPORT;
 		double confidence = T_CONFIDENCE/100;
 		String fileName = "";
@@ -38,11 +40,11 @@ public class Main {
 			System.exit(-1);
 		}
 		//CallGraph callGraph = new CallGraph();
-		this.Parse(fileName);
+		Parse(fileName);
 		
 	}//end of main method
 	
-	public void Parse(String fileName){
+	public static void Parse(String fileName){
 		Pattern nodePattern = Pattern.compile("Call graph node for function: '(.*?)'<<.*>>  #uses=(\\d*).*$");
 		Pattern functionPattern = Pattern.compile("CS<(.*)> calls function '(.*?)'.*$");
 
@@ -81,8 +83,12 @@ public class Main {
 			System.exit(-1);
 		}
 		
+
+		//for( Map.Entry<Integer, String> entry:functions.entrySet()){
+		//	System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
+		//}
 		for(Function function : functions){
-			System.out.println(function.getName());
+			System.out.println("Id: "+function.getId()+", Name: "+function.getName());
 		}
 		
 	}//end of parse

@@ -16,6 +16,19 @@ public class Function {
 	public int getId(){
 		return id;
 	}
+
+	@Override
+	public int hashCode() {
+		// TODO Auto-generated method stub
+	    return name.hashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		// TODO Auto-generated method stub
+		if (!(obj instanceof Function)) return false;
+	    return (name.equals(((Function)obj).getName()) );
+	}
 	
 	
 }
