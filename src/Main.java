@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 public class Main {
 	public static int T_SUPPORT = 3;
 	public static int T_CONFIDENCE = 65;
-	static HashSet<Function> functions = new HashSet<Function>();
+	private static HashMap<Integer, String> functions = new HashMap<Integer, String>();
 	public static void main(String[] args){
 		int support = T_SUPPORT;
 		double confidence = T_CONFIDENCE/100;
@@ -39,12 +39,12 @@ public class Main {
 			System.out.println("Error: Arument needs to contain CallGraph file name");
 			System.exit(-1);
 		}
-		//CallGraph callGraph = new CallGraph();
-		Parse(fileName);
+		CallGraph callGraph = new CallGraph();
+		Parse(fileName,callGraph);
 		
 	}//end of main method
 	
-	public static void Parse(String fileName){
+	public static void Parse(String fileName, CallGraph callgraph){
 		Pattern nodePattern = Pattern.compile("Call graph node for function: '(.*?)'<<.*>>  #uses=(\\d*).*$");
 		Pattern functionPattern = Pattern.compile("CS<(.*)> calls function '(.*?)'.*$");
 
@@ -64,15 +64,17 @@ public class Main {
 				Matcher nodeMacher = nodePattern.matcher(currentLine);
 				if(nodeMacher.find()){
 					callerName = nodeMacher.group(1);
-					Function caller = new Function(callerName.hashCode(),callerName);
-					functions.add(caller);
+					//Function caller = new Function(callerName.hashCode(),callerName);
+					//functions.add(caller);
+					callgraph.addToFunctionList(callerName);
 					//System.out.println(caller.getId()+caller.getName());
 				}
 				Matcher functionMatcher = functionPattern.matcher(currentLine);
 				if(functionMatcher.find()){
 					calleeName = functionMatcher.group(2);
-					Function callee = new Function(calleeName.hashCode(),calleeName);
-					functions.add(callee);
+					//Function callee = new Function(calleeName.hashCode(),calleeName);
+					//functions.add(callee);
+					callgraph.addToFunctionList(calleeName);
 					//System.out.println(callee.getId()+callee.getName());
 
 				}
@@ -83,13 +85,11 @@ public class Main {
 			System.exit(-1);
 		}
 		
-
-		//for( Map.Entry<Integer, String> entry:functions.entrySet()){
-		//	System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
-		//}
-		for(Function function : functions){
-			System.out.println("Id: "+function.getId()+", Name: "+function.getName());
+		functions = callgraph.getFunctions();
+		for( Map.Entry<Integer, String> entry:functions.entrySet()){
+			System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
 		}
+
 		
 	}//end of parse
 	

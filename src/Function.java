@@ -16,6 +16,10 @@ public class Function {
 	public int getId(){
 		return id;
 	}
+	public String findName(Integer functionId){
+		if(functionId == id)return name;
+		else return null;
+	}
 
 	@Override
 	public int hashCode() {
