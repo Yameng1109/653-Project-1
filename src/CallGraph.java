@@ -8,7 +8,6 @@ public class CallGraph {
 	
 	public void addToFunctionList(String newFunction){
 		int newId = newFunction.hashCode();
-		if(functions!= null && functions.containsKey(newId)) return;
 		functions.put(newId, newFunction);
 	}
 	
