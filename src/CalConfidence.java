@@ -4,7 +4,7 @@ import java.util.Set;
 
 public class CalConfidence {
 
-	public CalConfidence(HashMap<Integer, HashSet<Integer>>graph, HashMap<Integer, String> functions,
+	public void PairConfidence(HashMap<Integer, HashSet<Integer>>graph, HashMap<Integer, String> functions,
 			int support, double confidence){
 
 		for(Integer keyFoo: graph.keySet()){

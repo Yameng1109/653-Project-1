@@ -45,7 +45,8 @@ public class Main {
 		//System.out.println(confidence);
 		CallGraph callGraph = new CallGraph();
 		Parse(fileName,callGraph);
-		CalConfidence con = new CalConfidence(graph, functions, support, confidence);
+		CalConfidence con = new CalConfidence();
+		con.PairConfidence(graph, functions, support, confidence);
 	}//end of main method
 	
 	static void Parse(String fileName, CallGraph callgraph){
