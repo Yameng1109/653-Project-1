@@ -10,11 +10,14 @@ import java.util.regex.Pattern;
 
 public class Main {
 	public static int T_SUPPORT = 3;
-	public static int T_CONFIDENCE = 65;
-	private static HashMap<Integer, String> functions = new HashMap<Integer, String>();
+	private static double T_CONFIDENCE = 65;
+	static HashMap<Integer, String> functions = new HashMap<Integer, String>();
+	static HashMap<Integer, HashSet<Integer>> graph = new HashMap<Integer, HashSet<Integer>>();
+	
 	public static void main(String[] args){
 		int support = T_SUPPORT;
 		double confidence = T_CONFIDENCE/100;
+
 		String fileName = "";
 		if (args.length > 0){
 			int i = 0;
@@ -39,16 +42,17 @@ public class Main {
 			System.out.println("Error: Arument needs to contain CallGraph file name");
 			System.exit(-1);
 		}
+		//System.out.println(confidence);
 		CallGraph callGraph = new CallGraph();
 		Parse(fileName,callGraph);
-		
+		CalConfidence con = new CalConfidence(graph, functions, support, confidence);
 	}//end of main method
 	
-	public static void Parse(String fileName, CallGraph callgraph){
+	static void Parse(String fileName, CallGraph callgraph){
 		Pattern nodePattern = Pattern.compile("Call graph node for function: '(.*?)'<<.*>>  #uses=(\\d*).*$");
 		Pattern functionPattern = Pattern.compile("CS<(.*)> calls function '(.*?)'.*$");
 
-		String callerName;
+		String callerName = "";
 		String calleeName;
 		
 		try {
@@ -66,7 +70,7 @@ public class Main {
 					callerName = nodeMacher.group(1);
 					//Function caller = new Function(callerName.hashCode(),callerName);
 					//functions.add(caller);
-					callgraph.addToFunctionList(callerName);
+					callgraph.addToFunctionSet(callerName);
 					//System.out.println(caller.getId()+caller.getName());
 				}
 				Matcher functionMatcher = functionPattern.matcher(currentLine);
@@ -74,7 +78,8 @@ public class Main {
 					calleeName = functionMatcher.group(2);
 					//Function callee = new Function(calleeName.hashCode(),calleeName);
 					//functions.add(callee);
-					callgraph.addToFunctionList(calleeName);
+					callgraph.addToFunctionSet(calleeName);
+					callgraph.createGraph(calleeName, callerName);
 					//System.out.println(callee.getId()+callee.getName());
 
 				}
@@ -86,10 +91,13 @@ public class Main {
 		}
 		
 		functions = callgraph.getFunctions();
+/*		
 		for( Map.Entry<Integer, String> entry:functions.entrySet()){
 			System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
 		}
-
+*/		
+		graph = callgraph.getGraph();
+		//System.out.println(graph);
 		
 	}//end of parse
 	
