@@ -11,14 +11,13 @@ public class Main {
 	public static int T_SUPPORT = 3;
 	private static double T_CONFIDENCE = 65;
 	
-	// functions<functionID, functionName>: A HashMap with functionID as key and functionName as value
-	//static HashMap<Integer, String> functions = new HashMap<Integer, String>();
+	// <HashSet> functions with functions' names as values
 	static HashSet<String> functions = new HashSet<String>();
 
-	// graph<calleeId, Set<callerID>>: A HashMap with calleeID as key and a HashSet of callerID as value
-	//static HashMap<Integer, HashSet<Integer>> graph = new HashMap<Integer, HashSet<Integer>>();
+	// <HashMap> graph with callees' names as keys, the set of its callers' names as values
 	static HashMap<String, HashSet<String>> graph = new HashMap<String, HashSet<String>>();
 
+	/* Main function */
 	public static void main(String[] args){
 		int support = T_SUPPORT;
 		double confidence = T_CONFIDENCE/100;
@@ -28,19 +27,19 @@ public class Main {
 			fileName = args[0];
 			
 			switch(args.length){
-			case 1:
+			case 1:				// filename with default value of T_SUPPORT, T_CONFIDENCE
 				break;
-			case 3:
+			case 3:				// filename with T_SUPPORT, T_CONFIDENCE
 				support = Integer.parseInt(args[1]);
 				confidence = Double.parseDouble(args[2])/100;
-				break;
-			default:
+				break;	
+			default:			// Illegal input format
 				System.out.println("Error: Wrong Number of Input Arguments");
 				System.exit(-1);
 			}
 
-		}else {
-			System.out.println("Error: Argument needs to contain at least callgraph file name");
+		}else {			// without any arguments
+			System.out.println("Error: Arument needs to contain at least callgraph file name");
 			System.exit(-1);
 		}
 
@@ -54,11 +53,11 @@ public class Main {
 		
 	}//end of main method
 	
-	// This method parses each line of the input callgraph file
-	// Store each function's name(String) and ID(hashCode) into functions
-	// Map each calleeID and its callersID and stored them into graph 
+	/* Parsing each line of the file, identify callers and callees */
 	static void Parse(String fileName, CallGraph callgraph){
+		// Pattern of caller
 		Pattern nodePattern = Pattern.compile("Call graph node for function: '(.*?)'<<.*>>  #uses=(\\d*).*$");
+		// Pattern of callee
 		Pattern functionPattern = Pattern.compile("CS<.*> calls function '(.*?)'.*$");
 		Matcher nodeMacher, functionMatcher;
 		
@@ -76,18 +75,18 @@ public class Main {
 			}
 			 
 			while((currentLine = br.readLine()) != null){
-				//Store node function's name
+				//Store caller's name
 				nodeMacher = nodePattern.matcher(currentLine);
 				if(nodeMacher.find()){
 					callerName = nodeMacher.group(1);
-					callgraph.addToFunctionSet(callerName);
+					callgraph.addToFunctionSet(callerName);		//Add caller's name into functions
 				}
-				//Store each function's callers
+				//Store callee's callers
 				functionMatcher = functionPattern.matcher(currentLine);
 				if(functionMatcher.find()){
 					calleeName = functionMatcher.group(1);
-					callgraph.addToFunctionSet(calleeName);
-					callgraph.createGraph(calleeName, callerName);
+					callgraph.addToFunctionSet(calleeName);		//Add callee's ID and name into functions
+					callgraph.createGraph(calleeName, callerName);		//Map callee and caller
 				}
 			}//end of while
 			callgraph.addfathercallers();
