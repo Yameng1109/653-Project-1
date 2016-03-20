@@ -15,25 +15,23 @@ public class CallGraph {
 	}
 	
 	//Add an edge between callee and fathercaller
-	public void addfathercallers(String calleeName){
-		HashSet <String> fathercallers = new HashSet <String>();
-
+	public void addfathercallers(String calleeName, HashSet <String> fathercallers, int Expand_level){
 		//System.out.printf("ee:%s\n",calleeName);
-		for(String callerName : graph.get(calleeName)){
-			//System.out.printf("er:%s\n",callerName);
-			if(graph.containsKey(callerName)){
+		//System.out.printf("level:%d\n",Expand_level);
+
+		if(Expand_level > 0){
+			for(String callerName : graph.get(calleeName)){
+				//System.out.printf("er:%s\n",callerName);
+				if(graph.containsKey(callerName)){
 					for(String fathercallerName : graph.get(callerName)){
 						if (graph.containsKey(fathercallerName)){
 							//System.out.printf("fer:%s\n",fathercallerName);
 							fathercallers.add(fathercallerName); 
 						}
 					}
-					addfathercallers(callerName);
+					addfathercallers(callerName, fathercallers, Expand_level-1);
+				}
 			}
-		}
-
-		for(String fathercaller : fathercallers){
-			graph.get(calleeName).add(fathercaller);
 		}
 	}
 	

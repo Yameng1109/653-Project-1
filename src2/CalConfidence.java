@@ -7,8 +7,8 @@ public class CalConfidence {
 
 	public void PairConfidence(
 			HashMap<String, HashSet<String>> graph, 	// The hashmap of each callee with caller set
-			int support,	// The support parameter from the input arguments
-			double confidence){		// The confidence parameter from the input arguments
+			int T_SUPPORT,	// The T_SUPPORT parameter from the input arguments
+			double T_CONFIDENCE){		// The T_CONFIDENCE parameter from the input arguments
 
 		/* For pair(Foo, Bar), each iteration do
 		 * calculate support and confidence of Foo
@@ -36,9 +36,9 @@ public class CalConfidence {
 					tmp.retainAll(callersBar);					
 					supportPair = tmp.size();
 					
-					if(supportPair >= support){
+					if(supportPair >= T_SUPPORT){
 						confidenceFoo = (double)supportPair/supportFoo;// Confidence of Foo on pair(Foo,Bar)
-						if(confidenceFoo >= confidence){
+						if(confidenceFoo >= T_CONFIDENCE){
 							// The nodes not in common set are labeled as bugs
 							tmpFoo.addAll(callersFoo);
 							tmpFoo.removeAll(tmp);		//Set of nodes not in common set

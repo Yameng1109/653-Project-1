@@ -8,19 +8,18 @@ import java.util.regex.Pattern;
 
 public class Main {
 	// Set default values for T_SUPPORT and T_CONFIDENCE
-	public static int T_SUPPORT = 3;
-	private static double T_CONFIDENCE = 65;
+	private static int T_SUPPORT = 3;
+	private static double T_CONFIDENCE = (double) 65/100;
+	private static int Expand_level = 0;
+
 	
 	// <HashMap> graph with callees' names as keys, the set of its callers' names as values
 	static HashMap<String, HashSet<String>> graph = new HashMap<String, HashSet<String>>();
 
-
 	/* Main function */
 	public static void main(String[] args){
-		int support = T_SUPPORT;
-		double confidence = T_CONFIDENCE/100;
 		String fileName = "";
-		// Get bitcode file's name and values for T_SUPPORT and T_CONFIDENCE from input arguments
+
 		if (args.length > 0){
 			fileName = args[0];
 			
@@ -28,8 +27,13 @@ public class Main {
 			case 1:				// filename with default value of T_SUPPORT, T_CONFIDENCE
 				break;
 			case 3:				// filename with T_SUPPORT, T_CONFIDENCE
-				support = Integer.parseInt(args[1]);
-				confidence = Double.parseDouble(args[2])/100;
+				T_SUPPORT = Integer.parseInt(args[1]);
+				T_CONFIDENCE = Double.parseDouble(args[2])/100;
+				break;	
+			case 4:				// filename with T_SUPPORT, T_CONFIDENCE, expand levels
+				T_SUPPORT = Integer.parseInt(args[1]);
+				T_CONFIDENCE = Double.parseDouble(args[2])/100;
+				Expand_level = Integer.parseInt(args[3]);
 				break;	
 			default:			// Illegal input format
 				System.out.println("Error: Wrong Number of Input Arguments");
@@ -42,12 +46,12 @@ public class Main {
 		}
 
 		//Parse each line of call graph 
-		CallGraph callGraph = new CallGraph();
-		Parse(fileName,callGraph);
+		CallGraph callgraph = new CallGraph();
+		Parse(fileName,callgraph);
 		
 		//Calculate confidences and detect bugs
 		CalConfidence con = new CalConfidence();
-		con.PairConfidence(graph, support, confidence);
+		con.PairConfidence(graph, T_SUPPORT, T_CONFIDENCE);
 		
 	}//end of main method
 	
@@ -85,22 +89,25 @@ public class Main {
 					callgraph.createGraph(calleeName, callerName);		//Map callee and caller
 				}
 			}//end of while
-			
 			br.close();
 			
+			//Get all functions and their callers
+			graph = callgraph.getGraph();
+			if(Expand_level > 0){
+				for(String callee : graph.keySet()){
+					HashSet <String> fathercallers = new HashSet <String>();
+					callgraph.addfathercallers(callee, fathercallers, Expand_level);
+
+					for(String fathercaller : fathercallers){
+						graph.get(callee).add(fathercaller);
+					}
+					//System.out.printf("\n");
+				}
+			}		
 		}catch(IOException e){
 			e.printStackTrace();
 			System.exit(-1);
 		}
-		
-		//Get all functions and their callers
-		graph = callgraph.getGraph();
-
-		for(String callee : graph.keySet()){
-			callgraph.addfathercallers(callee);
-			//System.out.printf("\n");
-		}
-
 	}//end of parse
 	
 }//end of class
