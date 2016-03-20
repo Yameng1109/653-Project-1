@@ -13,6 +13,8 @@ public class Main {
 	
 	// <HashMap> graph with callees' names as keys, the set of its callers' names as values
 	static HashMap<String, HashSet<String>> graph = new HashMap<String, HashSet<String>>();
+	static HashMap<String, HashSet<String>> graphcopy = new HashMap<String, HashSet<String>>();
+
 
 	/* Main function */
 	public static void main(String[] args){
@@ -84,7 +86,6 @@ public class Main {
 					callgraph.createGraph(calleeName, callerName);		//Map callee and caller
 				}
 			}//end of while
-			callgraph.addfathercallers();
 			
 			br.close();
 			
@@ -94,7 +95,14 @@ public class Main {
 		}
 		
 		//Get all functions and their callers
-		graph = callgraph.getGraph();		
+		graph = callgraph.getGraph();
+		graphcopy = callgraph.getGraph();
+
+		for(String callee : graphcopy.keySet()){
+			callgraph.addfathercallers(callee);
+			//System.out.printf("\n");
+		}
+
 	}//end of parse
 	
 }//end of class
