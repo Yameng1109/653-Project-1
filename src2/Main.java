@@ -11,9 +11,6 @@ public class Main {
 	public static int T_SUPPORT = 3;
 	private static double T_CONFIDENCE = 65;
 	
-	// <HashSet> functions with functions' names as values
-	static HashSet<String> functions = new HashSet<String>();
-
 	// <HashMap> graph with callees' names as keys, the set of its callers' names as values
 	static HashMap<String, HashSet<String>> graph = new HashMap<String, HashSet<String>>();
 
@@ -49,7 +46,7 @@ public class Main {
 		
 		//Calculate confidences and detect bugs
 		CalConfidence con = new CalConfidence();
-		con.PairConfidence(functions, graph, support, confidence);
+		con.PairConfidence(graph, support, confidence);
 		
 	}//end of main method
 	
@@ -79,13 +76,11 @@ public class Main {
 				nodeMacher = nodePattern.matcher(currentLine);
 				if(nodeMacher.find()){
 					callerName = nodeMacher.group(1);
-					callgraph.addToFunctionSet(callerName);		//Add caller's name into functions
 				}
 				//Store callee's callers
 				functionMatcher = functionPattern.matcher(currentLine);
 				if(functionMatcher.find()){
 					calleeName = functionMatcher.group(1);
-					callgraph.addToFunctionSet(calleeName);		//Add callee's ID and name into functions
 					callgraph.createGraph(calleeName, callerName);		//Map callee and caller
 				}
 			}//end of while
@@ -99,7 +94,6 @@ public class Main {
 		}
 		
 		//Get all functions and their callers
-		functions = callgraph.getFunctions();		
 		graph = callgraph.getGraph();		
 	}//end of parse
 	

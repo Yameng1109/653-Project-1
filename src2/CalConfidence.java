@@ -5,7 +5,7 @@ import java.util.Set;
 /* Class Description: Calculating support and confidence of each pair of two functions */
 public class CalConfidence {
 
-	public void PairConfidence(HashSet<String> functions,		// Hashset of functions' name
+	public void PairConfidence(
 			HashMap<String, HashSet<String>> graph, 	// The hashmap of each callee with caller set
 			int support,	// The support parameter from the input arguments
 			double confidence){		// The confidence parameter from the input arguments

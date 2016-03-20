@@ -11,11 +11,6 @@ public class CallGraph {
 	private HashMap<String, HashSet<String>> graph = new HashMap<String, HashSet<String>>();
 	private HashMap<String, HashSet<String>> graphcopy = new HashMap<String, HashSet<String>>();
 	
-	//Add a new node to the callgraph
-	public void addToFunctionSet(String newFunction){
-		functions.add(newFunction);
-	}
-	
 	//Add an edge between callee and caller
 	public void createGraph(String calleeName, String callerName){
 		if (!graph.containsKey(calleeName)){
