@@ -26,6 +26,8 @@ public class Main {
 			switch(args.length){
 			case 1:				// filename with default value of T_SUPPORT, T_CONFIDENCE
 				break;
+			case 2:
+				Expand_level = Integer.parseInt(args[1]);	// filename with expand levels
 			case 3:				// filename with T_SUPPORT, T_CONFIDENCE
 				T_SUPPORT = Integer.parseInt(args[1]);
 				T_CONFIDENCE = Double.parseDouble(args[2])/100;
