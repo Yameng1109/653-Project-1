@@ -15,6 +15,8 @@ public class Main {
 	
 	// <HashMap> graph with callees' names as keys, the set of its callers' names as values
 	static HashMap<String, HashSet<String>> graph = new HashMap<String, HashSet<String>>();
+	static HashMap<String, HashSet<String>> graphcopy = new HashMap<String, HashSet<String>>();
+
 
 	/* Main function */
 	public static void main(String[] args){
@@ -50,11 +52,13 @@ public class Main {
 
 		//Parse each line of call graph 
 		CallGraph callgraph = new CallGraph();
+		graph = callgraph.getGraph();
+		graphcopy = callgraph.getGraphcopy();
 		Parse(fileName,callgraph);
 		
 		//Calculate confidences and detect bugs
 		CalConfidence con = new CalConfidence();
-		con.PairConfidence(graph, T_SUPPORT, T_CONFIDENCE);
+		con.PairConfidence(graph, graphcopy, T_SUPPORT, T_CONFIDENCE);
 		
 	}//end of main method
 	
@@ -95,17 +99,13 @@ public class Main {
 			br.close();
 			
 			//Get all functions and their callers
-			graph = callgraph.getGraph();
 			if(Expand_level > 0){
-				for(String callee : graph.keySet()){
+				for(String callee : graphcopy.keySet()){
 					HashSet <String> fathercallers = new HashSet <String>();
 					callgraph.addfathercallers(callee, fathercallers, Expand_level);
 
-					graph.get(callee).addAll(fathercallers);
+					graphcopy.get(callee).addAll(fathercallers);
 
-					/*for(String fathercaller : fathercallers){
-						graph.get(callee).add(fathercaller);
-					}*/
 					//System.out.printf("\n");
 				}
 			}		

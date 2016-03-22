@@ -29,6 +29,7 @@ public class CallGraph {
 					for(String fathercallerName : graph.get(callerName)){
 						if (graph.containsKey(fathercallerName)){
 							//System.out.printf("fer:%s\n",fathercallerName);
+							//graphcopy.get(callerName).remove(fathercallerName);
 							fathercallers.add(fathercallerName); 
 						}
 					}
@@ -39,7 +40,11 @@ public class CallGraph {
 	}
 	
 	public HashMap<String, HashSet<String>> getGraph(){
-			return graphcopy;
+		return graph;
 	}
 	
+	public HashMap<String, HashSet<String>> getGraphcopy(){
+		return graphcopy;
+	}
 }
+	

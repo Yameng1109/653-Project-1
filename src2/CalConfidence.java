@@ -7,6 +7,7 @@ public class CalConfidence {
 
 	public void PairConfidence(
 			HashMap<String, HashSet<String>> graph, 	// The hashmap of each callee with caller set
+			HashMap<String, HashSet<String>> graphcopy, 	// The hashmap of each callee with fathercaller set
 			int T_SUPPORT,	// The T_SUPPORT parameter from the input arguments
 			double T_CONFIDENCE){		// The T_CONFIDENCE parameter from the input arguments
 
@@ -44,13 +45,15 @@ public class CalConfidence {
 							tmpFoo.removeAll(tmp);		//Set of nodes not in common set
 							if(!tmpFoo.isEmpty()){
 								for(String callerFoo:tmpFoo){
-									compare = calleeFoo.compareTo(calleeBar);		// Sort the pair functions' names
-									if(compare < 0){
-										System.out.printf("bug: %s in %s, pair: (%s, %s), support: %d, confidence: %.2f%%\n", 
-												calleeFoo, callerFoo, calleeFoo, calleeBar, supportPair, confidenceFoo*100);
-									}else{
-										System.out.printf("bug: %s in %s, pair: (%s, %s), support: %d, confidence: %.2f%%\n", 
-												calleeFoo, callerFoo, calleeBar, calleeFoo, supportPair, confidenceFoo*100);
+									if(!graphcopy.get(calleeBar).contains(callerFoo)){
+										compare = calleeFoo.compareTo(calleeBar);		// Sort the pair functions' names
+										if(compare < 0){
+											System.out.printf("bug: %s in %s, pair: (%s, %s), support: %d, confidence: %.2f%%\n", 
+													calleeFoo, callerFoo, calleeFoo, calleeBar, supportPair, confidenceFoo*100);
+										}else{
+											System.out.printf("bug: %s in %s, pair: (%s, %s), support: %d, confidence: %.2f%%\n", 
+													calleeFoo, callerFoo, calleeBar, calleeFoo, supportPair, confidenceFoo*100);
+										}
 									}
 								}
 							}
