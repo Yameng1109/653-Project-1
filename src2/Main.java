@@ -101,9 +101,11 @@ public class Main {
 					HashSet <String> fathercallers = new HashSet <String>();
 					callgraph.addfathercallers(callee, fathercallers, Expand_level);
 
-					for(String fathercaller : fathercallers){
+					graph.get(callee).addAll(fathercallers);
+
+					/*for(String fathercaller : fathercallers){
 						graph.get(callee).add(fathercaller);
-					}
+					}*/
 					//System.out.printf("\n");
 				}
 			}		
