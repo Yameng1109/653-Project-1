@@ -28,6 +28,7 @@ public class Main {
 				break;
 			case 2:
 				Expand_level = Integer.parseInt(args[1]);	// filename with expand levels
+				break;
 			case 3:				// filename with T_SUPPORT, T_CONFIDENCE
 				T_SUPPORT = Integer.parseInt(args[1]);
 				T_CONFIDENCE = Double.parseDouble(args[2])/100;
