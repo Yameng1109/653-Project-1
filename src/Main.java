@@ -65,7 +65,7 @@ public class Main {
 			currentLine = br.readLine();
 			
 			//skip the <<null function>> node
-			while(!currentLine.isEmpty()){
+			while((currentLine != null) && (!currentLine.isEmpty())){
 				currentLine = br.readLine();
 			}
 			
