@@ -57,11 +57,11 @@ public class Main {
 		Pattern functionPattern = Pattern.compile("CS<(.*)> calls function '(.*?)'.*$");
 
 		String callerName = "";
-		String calleeName;
-		
+		String calleeName = "";
+		String currentLine = null;
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(fileName));
-			String currentLine = null;
+			
 			currentLine = br.readLine();
 			
 			//skip the <<null function>> node
