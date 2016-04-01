@@ -19,3 +19,4 @@ classes:
 	
 clean:
 	$(RM) $(BIN)/*.class
+	$(RM) *.out
