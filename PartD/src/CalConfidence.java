@@ -12,7 +12,6 @@ public class CalConfidence {
 	public CalConfidence(HashMap<Integer, String> functions) {
 		// TODO Auto-generated constructor stub
 		this.functions = functions;
-	
 	}
 
 	public void orderedPairConfidence(HashMap<Integer,HashMap<Integer, Integer>> orderedGraph, // The hashmap of each callee with caller set
@@ -37,6 +36,7 @@ public class CalConfidence {
 					 * The number of common nodes is the pair(Foo,Bar) support
 					 */
 					HashMap<Integer, Integer> caller2Map = orderedGraph.get(keyBar); //Bar's caller set
+					int supportBar = caller2Map.size();
 					Set<Integer> tmp = new HashSet<Integer>();
 					Set<Integer> callersBar = caller2Map.keySet();
 					//System.out.println(calleeBar+":"+callersBar);
@@ -47,27 +47,31 @@ public class CalConfidence {
 					//System.out.println("tmp:"+tmp);
 					supportPair = tmp.size();
 					//System.out.println(supportPair);
+					double confidenceFoo = (double)supportPair/supportFoo;	// Confidence of Foo on pair(Foo,Bar)
+                    double confidenceBar = (double)supportPair/supportBar;// Confidence of Bar on pair(Foo,Bar)
+                    double newconfidence = 2/(1/confidenceFoo + 1/confidenceBar);
+
 					if(supportPair >= support){
-						
-						double confidenceFoo = (double)supportPair/supportFoo;	// Confidence of Foo on pair(Foo,Bar)
 						//System.out.println(confidenceFoo);
 						if(confidenceFoo >= confidence){
-							// The nodes not in common set are labeled as bugs
-							Set<Integer> tmpFoo = new HashSet<Integer>();
-							tmpFoo.addAll(callersFoo);
-							tmpFoo.removeAll(tmp); //Set of nodes not in common set
-							if(!tmpFoo.isEmpty()){
-								for(Integer id:tmpFoo){
-									String callerFoo = functions.get(id);
-									int compare = calleeFoo.compareTo(calleeBar);	// Sort the pair functions' names
-									if(compare < 0){
-										System.out.printf("bug: %s in %s, pair: (%s, %s), support: %d, confidence: %.2f%%\n", 
-												calleeFoo, callerFoo, calleeFoo, calleeBar, supportPair, confidenceFoo*100);
-									}else{
-										System.out.printf("bug: %s in %s, pair: (%s, %s), support: %d, confidence: %.2f%%\n", 
-												calleeFoo, callerFoo, calleeBar, calleeFoo, supportPair, confidenceFoo*100);
+                            if(newconfidence >= confidence){
+								// The nodes not in common set are labeled as bugs
+								Set<Integer> tmpFoo = new HashSet<Integer>();
+								tmpFoo.addAll(callersFoo);
+								tmpFoo.removeAll(tmp); //Set of nodes not in common set
+								if(!tmpFoo.isEmpty()){
+									for(Integer id:tmpFoo){
+										String callerFoo = functions.get(id);
+										int compare = calleeFoo.compareTo(calleeBar);	// Sort the pair functions' names
+										if(compare < 0){
+											System.out.printf("bug: %s in %s, pair: (%s, %s), support: %d, confidence: %.2f%%\n", 
+													calleeFoo, callerFoo, calleeFoo, calleeBar, supportPair, confidenceFoo*100);
+										}else{
+											System.out.printf("bug: %s in %s, pair: (%s, %s), support: %d, confidence: %.2f%%\n", 
+													calleeFoo, callerFoo, calleeBar, calleeFoo, supportPair, confidenceFoo*100);
+										}
+										
 									}
-									
 								}
 							}
 						}
@@ -89,32 +93,33 @@ public class CalConfidence {
 					
 					Set<Integer> bugSet = new HashSet<Integer>();
 					//int pairSupport = order1.size() + order2.size();
-					if(order1.size() > order2.size()){
-						int trueOrderSupport = order1.size();
-						orderedConfidence = (double) order1.size()/supportPair;
-						if(orderedConfidence >= confidence){
-							bugSet.addAll(order2);
-							Pair pair = new Pair(calleeFoo, calleeBar, supportPair, trueOrderSupport);
-							if(orderedBug.containsKey(pair)){
-								continue;
+					//if(confidenceFoo >= confidence){
+                        //if(newconfidence >= confidence){
+							if(order1.size() > order2.size()){
+								int trueOrderSupport = order1.size();
+								orderedConfidence = (double) order1.size()/supportPair;
+								if(orderedConfidence >= confidence){
+										bugSet.addAll(order2);
+										Pair pair = new Pair(calleeFoo, calleeBar, supportPair, trueOrderSupport);
+										if(orderedBug.containsKey(pair)){
+											continue;
+										}
+										orderedBug.put(pair, bugSet);
+								}							
+							}else{
+								int trueOrderSupport = order2.size();
+								orderedConfidence = (double) order2.size()/supportPair;
+								if(orderedConfidence >= confidence){
+									bugSet.addAll(order1);
+									Pair pair = new Pair(calleeBar, calleeFoo, supportPair, trueOrderSupport);
+									if(orderedBug.containsKey(pair)){
+										continue;
+									}
+									orderedBug.put(pair, bugSet);
+								}					
 							}
-							orderedBug.put(pair, bugSet);
-						}
-												
-					}else{
-						int trueOrderSupport = order2.size();
-						orderedConfidence = (double) order2.size()/supportPair;
-						if(orderedConfidence >= confidence){
-							bugSet.addAll(order1);
-							Pair pair = new Pair(calleeBar, calleeFoo, supportPair, trueOrderSupport);
-							if(orderedBug.containsKey(pair)){
-								continue;
-							}
-							orderedBug.put(pair, bugSet);
-						}					
-					}
-					
-					
+                        //}
+					//}			
 				}
 			}//end of inner for
 		}//end of outer for
